@@ -1,11 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>hi app is runnig</h1>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}VidBrain AI - Learn Directly From YouTube Videos{% endblock %}
+
+{% block content %}
+<div class="relative py-12 md:py-24 overflow-hidden flex flex-col items-center justify-center text-center">
+    
+    <!-- Background glow accents paying homage to image_8814dc.jpg -->
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-mint-50 rounded-full filter blur-3xl opacity-70 -z-10 pointer-events-none"></div>
+    <div class="absolute bottom-10 right-10 w-72 h-72 bg-coral-400/5 rounded-full filter blur-2xl -z-10 pointer-events-none"></div>
+
+    <!-- Status Pill Badge -->
+    <div class="inline-flex items-center gap-2 bg-mint-100/60 text-mint-600 px-4 py-2 rounded-full text-xs font-bold mb-8 tracking-wider uppercase animate-fade-in shadow-sm border border-mint-200/50">
+        <span class="w-2.5 h-2.5 rounded-full bg-mint-400 animate-pulse"></span>
+        Next-Gen Semantic Video Search
+    </div>
+
+    <!-- Hero Title -->
+    <h1 class="text-4xl sm:text-6xl font-black text-darkText tracking-tight max-w-4xl leading-tight mb-6">
+        Unlock Knowledge Hidden in <span class="text-mint-400 relative inline-block">
+            YouTube Videos
+            <span class="absolute left-0 bottom-1 w-full h-2 bg-mint-100 -z-10 rounded"></span>
+        </span>
+    </h1>
+
+    <!-- Subtext -->
+    <p class="text-gray-500 text-base sm:text-xl max-w-2xl leading-relaxed mb-12">
+        Don't waste hours scrolling through timelines. VidBrain parses audio, creates semantic vector databases, and answers your hard questions instantly with dynamic timestamps.
+    </p>
+
+    <!-- HERO CENTRAL WORKSPACE CTA BUTTON -->
+    <div class="relative group mb-20 z-10">
+        <!-- Floating active background pulse effect for primary action button -->
+        <div class="absolute -inset-1.5 bg-gradient-to-r from-coral-400 to-mint-400 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-300"></div>
+        
+        <a href="/home/workspace" class="btn-animate relative flex items-center justify-center gap-3 bg-coral-400 hover:bg-coral-500 text-white font-extrabold text-base sm:text-lg px-10 py-5 rounded-2xl transition-all duration-200 shadow-xl shadow-coral-400/30">
+            <!-- Play icon representing the YouTube linkage -->
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+            </svg>
+            GET STARTED — PASTE VIDEO LINK
+            <!-- Right-pointing helper chevron -->
+            <svg class="w-5 h-5 stroke-current font-bold" fill="none" viewBox="0 0 24 24" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+        </a>
+    </div>
+
+    <!-- VISUAL GRAPHIC: HOW THE RAG PIPELINE WORKS -->
+    <div class="w-full max-w-5xl bg-white rounded-3xl border border-gray-100 shadow-xl p-8 sm:p-12 relative">
+        <div class="absolute top-4 right-4 text-xs font-bold text-gray-300">SYSTEM ARCHITECTURE v1.2</div>
+        
+        <h3 class="text-xl font-bold text-darkText mb-10">How our AI Learning Assistant processes video contexts</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            
+            <!-- Step 1 Card -->
+            <div class="flex flex-col items-center text-center p-4 relative z-10">
+                <div class="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mb-6 shadow-md shadow-red-100">
+                    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.507a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.507 9.388.507 9.388.507s7.517 0 9.388-.507a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                    </svg>
+                </div>
+                <h4 class="font-bold text-darkText mb-2">1. Paste Video Source</h4>
+                <p class="text-xs text-gray-400 max-w-xs">Input your link. VidBrain uses automated pipelines to extract sound, captions, and key chapter frames.</p>
+            </div>
+
+            <!-- Arrow Bridge 1 -->
+            <div class="hidden md:block absolute left-1/3 top-12 w-12 text-mint-400 transform -translate-x-1/2">
+                <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+            </div>
+
+            <!-- Step 2 Card -->
+            <div class="flex flex-col items-center text-center p-4 relative z-10">
+                <div class="w-16 h-16 bg-mint-50 text-mint-400 rounded-2xl flex items-center justify-center mb-6 shadow-md shadow-mint-100">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                    </svg>
+                </div>
+                <h4 class="font-bold text-darkText mb-2">2. Vector Indexing</h4>
+                <p class="text-xs text-gray-400 max-w-xs">Text is split into semantic blocks and stored in real-time high-dimensional mathematical coordinates.</p>
+            </div>
+
+            <!-- Arrow Bridge 2 -->
+            <div class="hidden md:block absolute left-2/3 top-12 w-12 text-mint-400 transform -translate-x-1/2">
+                <svg class="w-8 h-8 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+            </div>
+
+            <!-- Step 3 Card -->
+            <div class="flex flex-col items-center text-center p-4 relative z-10">
+                <div class="w-16 h-16 bg-coral-50 text-coral-400 rounded-2xl flex items-center justify-center mb-6 shadow-md shadow-coral-100">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                    </svg>
+                </div>
+                <h4 class="font-bold text-darkText mb-2">3. Chat Assistant</h4>
+                <p class="text-xs text-gray-400 max-w-xs">Ask any question. Our platform finds exact fragments from vector stores to craft hallucination-free answers.</p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

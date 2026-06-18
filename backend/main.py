@@ -1,9 +1,13 @@
 from fastapi import FastAPI,Request
-from fastapi.templating import Jinja2Templates
 from fastapi.responses  import HTMLResponse
+from app.templates import templates
+from app.api.workspace import router as workspace_router
 
 app=FastAPI()
-template=Jinja2Templates(directory=r"E:\Youtube learning assitance\AI-Youtube-assistent\frontend\templates")
+router_list=[workspace_router]
+for router in router_list:
+    app.include_router(router)
+    
 @app.get("/")
 def home(request:Request):
-    return template.TemplateResponse(request=request,name="base.html")
+    return templates.TemplateResponse(request=request,name="home.html")

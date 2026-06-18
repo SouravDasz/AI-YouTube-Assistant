@@ -1,0 +1,218 @@
+{% extends "base.html" %}
+
+{% block title %}RAG Chat Workspace - VidBrain AI{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+    
+    <!-- BACKEND STATUS MESSAGES (Replaces JS Toast) -->
+    {% if success_message %}
+    <div class="bg-emerald-50 border border-emerald-100 text-emerald-800 px-5 py-4 rounded-2xl shadow-sm flex items-center gap-3 text-sm font-semibold animate-pulse">
+        <span>✅</span>
+        <span>{{ success_message }}</span>
+    </div>
+    {% endif %}
+
+    {% if error_message %}
+    <div class="bg-rose-50 border border-rose-100 text-rose-800 px-5 py-4 rounded-2xl shadow-sm flex items-center gap-3 text-sm font-semibold">
+        <span>⚠️</span>
+        <span>{{ error_message }}</span>
+    </div>
+    {% endif %}
+
+    <!-- TOP URL INGESTION / UPDATE BAR -->
+    <div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+            <span class="w-10 h-10 bg-mint-50 rounded-xl flex items-center justify-center text-mint-500 font-bold shrink-0">
+                🔗
+            </span>
+            <div class="truncate">
+                <h2 class="text-sm font-bold text-darkText">Active Video Source</h2>
+                <p class="text-xs text-gray-400 truncate max-w-md" id="active-url-display">
+                    URL: {{ active_url|default("https://www.youtube.com/watch?v=dQw4w9WgXcQ") }}
+                </p>
+            </div>
+        </div>
+        
+        <!-- Semantic POST form submitting directly back to the workspace backend -->
+        <form id="workspace-url-form" method="POST" action="/home/workspace" class="w-full md:w-auto flex-grow max-w-xl flex gap-2">
+            {% if csrf_token %}<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">{% endif %}
+            <input id="workspace-url-input" name="youtube_url" type="url" required placeholder="Paste another YouTube URL..." 
+                   class="flex-grow bg-gray-50 border border-gray-200/80 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-mint-400 text-darkText" />
+            <button type="submit" class="btn-animate bg-coral-400 hover:bg-coral-500 text-white text-xs font-bold px-6 py-2.5 rounded-xl transition-all duration-200 shadow-md shadow-coral-400/10 shrink-0">
+                Update Video
+            </button>
+        </form>
+    </div>
+
+    <!-- WORKSPACE SPLIT GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        
+        <!-- COLUMN 1: VIDEO DETAILS & TIMESTAMPS (5 cols) -->
+        <div class="lg:col-span-5 space-y-6">
+            <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+                
+                <!-- Mock Embedded YouTube Player Card -->
+                <div class="relative aspect-video bg-slate-950 flex items-center justify-center group overflow-hidden">
+                    <div class="absolute inset-0 bg-cover bg-center opacity-65" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80')"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    
+                    <div class="z-10 text-center p-4">
+                        <button class="w-16 h-16 bg-coral-400 hover:bg-coral-500 text-white rounded-full flex items-center justify-center mx-auto shadow-lg shadow-coral-400/40 transition-all transform hover:scale-105 active:scale-95">
+                            <svg class="w-6 h-6 fill-current ml-1" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </button>
+                        <span class="inline-block mt-3 bg-slate-900/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-bold text-slate-200 uppercase tracking-wider">
+                            Semantic Index Connected
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Video Metadata -->
+                <div class="p-6">
+                    <div class="flex items-center justify-between gap-2 mb-2">
+                        <span id="workspace-category" class="text-[10px] font-extrabold uppercase tracking-wider text-mint-500 bg-mint-50 px-2.5 py-1 rounded-md">
+                            {{ video_category|default("Technology") }}
+                        </span>
+                        <span class="text-xs text-gray-400 font-medium">Duration: {{ video_duration|default("15:42") }}</span>
+                    </div>
+                    
+                    <h1 id="workspace-title" class="text-lg font-black text-darkText leading-tight mb-3">
+                        {{ video_title|default("Introduction to Vector Databases & Semantic RAG Pipelines") }}
+                    </h1>
+                    
+                    <p class="text-xs text-gray-400 leading-relaxed mb-6">
+                        {{ video_description|default("Learn how high-dimensional vectors are clustered and queried in real-time vector indexes to serve as contextual facts for LLMs.") }}
+                    </p>
+
+                    <!-- Interactive Segmented Chapters -->
+                    <div class="border-t border-gray-100 pt-5 space-y-2.5">
+                        <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">
+                            Auto-Generated RAG Chapters
+                        </h4>
+                        
+                        <!-- Clickable Chapter 1 -->
+                        <div class="flex justify-between items-center bg-gray-50 hover:bg-mint-50/50 border border-transparent hover:border-mint-100 p-3 rounded-xl cursor-pointer transition-all duration-150 group">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-mint-500">00:00</span>
+                                <span class="text-xs font-semibold text-darkText group-hover:text-mint-600 transition-colors">Course Introduction</span>
+                            </div>
+                            <span class="text-[10px] font-semibold text-gray-400 group-hover:text-mint-500">Play Segment</span>
+                        </div>
+
+                        <!-- Clickable Chapter 2 -->
+                        <div class="flex justify-between items-center bg-gray-50 hover:bg-mint-50/50 border border-transparent hover:border-mint-100 p-3 rounded-xl cursor-pointer transition-all duration-150 group">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-mint-500">03:15</span>
+                                <span class="text-xs font-semibold text-darkText group-hover:text-mint-600 transition-colors">Vector Embeddings Decoded</span>
+                            </div>
+                            <span class="text-[10px] font-semibold text-gray-400 group-hover:text-mint-500">Play Segment</span>
+                        </div>
+
+                        <!-- Clickable Chapter 3 -->
+                        <div class="flex justify-between items-center bg-gray-50 hover:bg-mint-50/50 border border-transparent hover:border-mint-100 p-3 rounded-xl cursor-pointer transition-all duration-150 group">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold text-mint-500">08:40</span>
+                                <span class="text-xs font-semibold text-darkText group-hover:text-mint-600 transition-colors">The Retrieval Loop & Prompts</span>
+                            </div>
+                            <span class="text-[10px] font-semibold text-gray-400 group-hover:text-mint-500">Play Segment</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 2: AI CHAT WORKSPACE (7 cols) -->
+        <div class="lg:col-span-7">
+            <div class="bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden flex flex-col h-[640px]">
+                
+                <!-- Chat Screen Header -->
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-mint-50/20">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3.5 h-3.5 bg-mint-400 rounded-full border-2 border-white shadow"></span>
+                        <h3 class="font-extrabold text-sm text-darkText tracking-tight">VidBrain RAG Assistant</h3>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-bold uppercase tracking-wider">
+                            Index Ready
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Chat Feed Container -->
+                <div class="flex-grow p-6 overflow-y-auto space-y-4" id="workspace-chat-container">
+                    
+                    <!-- AI Hello Message -->
+                    <div class="flex justify-start items-start gap-3">
+                        <span class="w-8 h-8 rounded-xl bg-mint-100 text-mint-500 flex items-center justify-center font-black text-xs shrink-0 shadow-sm">
+                            AI
+                        </span>
+                        <div class="bg-gray-50 text-slate-700 rounded-2xl rounded-tl-none px-4 py-3.5 max-w-md text-xs sm:text-sm font-medium border border-gray-100 shadow-sm leading-relaxed">
+                            <p class="mb-1">Hello! I have fully processed the video transcripts into high-dimensional vectors. 💡</p>
+                            <p>What would you like me to find or explain from this tutorial?</p>
+                        </div>
+                    </div>
+
+                    <!-- User Sample Message -->
+                    <div class="flex justify-end">
+                        <div class="bg-coral-400 text-white rounded-2xl rounded-tr-none px-4 py-3.5 max-w-sm text-xs sm:text-sm font-semibold shadow-md shadow-coral-400/15 leading-relaxed">
+                            Can you explain what vector embeddings are according to the video?
+                        </div>
+                    </div>
+
+                    <!-- AI Semantic Response Message -->
+                    <div class="flex justify-start items-start gap-3">
+                        <span class="w-8 h-8 rounded-xl bg-mint-100 text-mint-500 flex items-center justify-center font-black text-xs shrink-0 shadow-sm">
+                            AI
+                        </span>
+                        <div class="bg-gray-50 text-slate-700 rounded-2xl rounded-tl-none px-4 py-3.5 max-w-md text-xs sm:text-sm font-medium border border-gray-100 shadow-sm leading-relaxed">
+                            <p class="mb-2">According to the video around chapter <span class="text-mint-500 font-extrabold hover:underline">[03:15]</span>, **vector embeddings** are numerical representations of words or concepts.</p>
+                            <p>They group similar meanings closer together in a mathematical coordinate system, allowing the system to perform contextual logic instead of simple keyword matching.</p>
+                        </div>
+                    </div>
+
+                    <!-- Iterated Dynamic Feed (Rendered on backend when forms are submitted) -->
+                    {% if latest_user_query %}
+                    <div class="flex justify-end">
+                        <div class="bg-coral-400 text-white rounded-2xl rounded-tr-none px-4 py-3.5 max-w-sm text-xs sm:text-sm font-semibold shadow-md shadow-coral-400/15 leading-relaxed">
+                            {{ latest_user_query }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if latest_ai_response %}
+                    <div class="flex justify-start items-start gap-3">
+                        <span class="w-8 h-8 rounded-xl bg-mint-100 text-mint-500 flex items-center justify-center font-black text-xs shrink-0 shadow-sm">
+                            AI
+                        </span>
+                        <div class="bg-gray-50 text-slate-700 rounded-2xl rounded-tl-none px-4 py-3.5 max-w-md text-xs sm:text-sm font-medium border border-gray-100 shadow-sm leading-relaxed">
+                            {{ latest_ai_response }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                </div>
+
+                <!-- Chat Message Input as HTML POST Form -->
+                <div class="p-4 border-t border-gray-100 bg-white">
+                    <form method="POST" action="" class="bg-gray-50 border border-gray-200/60 rounded-2xl p-2 flex items-center gap-2 focus-within:ring-2 focus-within:ring-mint-400 focus-within:border-transparent transition-all">
+                        {% if csrf_token %}<input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">{% endif %}
+                        <input id="workspace-user-message" name="chat_query" type="text" required placeholder="Ask a question about the video transcript..." 
+                               class="w-full bg-transparent border-0 px-3 py-2 focus:outline-none text-xs sm:text-sm text-darkText placeholder-gray-400" />
+                        <button type="submit" class="btn-animate bg-mint-400 hover:bg-mint-500 text-white p-3 rounded-xl transition-all duration-200 shadow-md shadow-mint-400/20 shrink-0">
+                            <svg class="w-4 h-4 transform rotate-90 fill-current" viewBox="0 0 20 20">
+                                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}
