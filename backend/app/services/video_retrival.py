@@ -1,5 +1,6 @@
 from urllib.parse import urlparse,parse_qs
 from youtube_transcript_api import YouTubeTranscriptApi
+# pyrefly: ignore [missing-import]
 from deep_translator import GoogleTranslator
 
 #Function for extract id from url
